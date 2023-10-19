@@ -1,0 +1,10 @@
+/.idea/
+/build/
+/dist/
+/venv/
+*/release/
+*/Makefile*
+*/.qmake.stash
+src/temp/
+src/eigen-3.3.8/
+
