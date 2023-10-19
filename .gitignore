@@ -2,6 +2,9 @@
 /build/
 /dist/
 /venv/
+/build/
+/dist/
+/tmp/
 */release/
 */Makefile*
 */.qmake.stash
