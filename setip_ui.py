@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 import subprocess
 import re
+from re import search
 import os
 import json
 
@@ -15,7 +16,9 @@ class NetAdapter:
         input_string = lines[2]
         pattern = r'掩码 (\d+\.\d+\.\d+\.\d+)'
         match = re.search(pattern, input_string)
-        self.Mask = match.group(1)
+        self.Mask = "255.255.255.0"
+        if (match):
+            self.Mask = match.group(1)
         # 接口 "net1" 的配置
         # DHCP 已启用:                          是
         # IP 地址:                           192.168.1.3
@@ -51,14 +54,26 @@ class SetIPUI:
             self.entry_vars.append(entry_var)
             rowIndex += 1
 
-        tk.Button(root, text="动态ip", width=10, command=self.setDynamicIp).grid(row=rowIndex, column=0, columnspan=2,
+        tk.Button(root, text="动态ip", width=10, command=self.setDynamicIp).grid(row=rowIndex, column=0, columnspan=1,
                                                                                  sticky="w", padx=10, pady=5)
-        tk.Button(root, text="静态ip", width=10, command=self.setStaticIp).grid(row=rowIndex, column=1, columnspan=2,
+        tk.Button(root, text="静态ip", width=10, command=self.setStaticIp).grid(row=rowIndex, column=1, columnspan=1,
                                                                                 sticky="e", padx=10, pady=5)
 
-    def setmid(self,root):
-        window_width = 250
-        window_height = 180
+        text = tk.Text(root, height=20, width=40)
+        text.grid(row=0, column=2, rowspan=rowIndex + 1, columnspan=3, sticky="e", padx=10, pady=5)
+        self.setExplain(text)
+
+    def setExplain(self, text: tk.Text):
+        context = "说明:\n" \
+                  "1.启动程序读取config.json文件\n" \
+                  "2.如果没有该文件则创建，写入当前网卡信息\n" \
+                  "3.通过配置信息进行网卡状态修改\n" \
+                  "4.更新文件状态，删除或修改当前config.json即可"
+        text.insert('1.0', context)
+
+    def setmid(self, root):
+        window_width = 580
+        window_height = 280
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
         x = (screen_width - window_width) // 2
@@ -69,7 +84,7 @@ class SetIPUI:
         fn = 'config.json'
         if not os.path.exists(fn):
             self.createConfig()
-        with open(fn, "r",encoding='utf-8') as json_file:
+        with open(fn, "r", encoding='utf-8') as json_file:
             data = json.load(json_file)
             return data
 
@@ -83,8 +98,8 @@ class SetIPUI:
             data[name] = {'dhcp': myAda.EnableDHCP, 'ip': myAda.IPAddr, 'mask': myAda.Mask}
         # 写回JSON文件
         fn = 'config.json'
-        with open(fn, "w",encoding='utf-8') as json_file:
-            json.dump(data, json_file, indent=4,ensure_ascii=False)
+        with open(fn, "w", encoding='utf-8') as json_file:
+            json.dump(data, json_file, indent=4, ensure_ascii=False)
 
     def getAllNames(self):
         command = "netsh interface show interface"
@@ -101,9 +116,9 @@ class SetIPUI:
         return adapters
 
     def getAdapterInfo(self, event):
-        key=self.cmb.get()
+        key = self.cmb.get()
         adapter = self.configDic[key]
-        dhcp=self.getAdapterInfoImpl(key).EnableDHCPStr()
+        dhcp = self.getAdapterInfoImpl(key).EnableDHCPStr()
         if adapter is None:
             messagebox.showerror("错误", f"{self.cmb.get()}未连接或未启用")
             return
@@ -118,7 +133,7 @@ class SetIPUI:
 
         # 解析输出以获取 IP 地址状态
         lines = output.splitlines()
-        if (len(lines) <= 5):
+        if not any('IP 地址' in line for line in lines):
             return
 
         myAda = NetAdapter(lines[2:])
