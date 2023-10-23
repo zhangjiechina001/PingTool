@@ -7,6 +7,7 @@ import socket
 import struct
 import select
 import time
+import threading
 
 ICMP_ECHO_REQUEST = 8 # Platform specific
 DEFAULT_TIMEOUT = 0.1
@@ -136,6 +137,7 @@ class Pinger(object):
                 print("Get pong in %0.4fms" % delay)
 
 def check_unused_ips():
+    button.configure(state=tk.DISABLED)
     ip_range = entry.get()
     unused_ips = []
     progress_bar['maximum'] = 254
@@ -153,6 +155,11 @@ def check_unused_ips():
         output.see(tk.END)
         progress_bar['value'] += 1
         window.update_idletasks()
+    button.configure(state=tk.NORMAL)
+
+def check_unused_ips_thread():
+    thread1 = threading.Thread(target=check_unused_ips)
+    thread1.start()
 
 window = tk.Tk()
 window.title("已使用的IP地址检测工具")
@@ -163,7 +170,7 @@ entry_text_var = tk.StringVar()  # 创建StringVar变量
 entry_text_var.set("192.168.0")  # 设置初始值
 entry = tk.Entry(window, width=20, justify='center', font=('Arial', 12),textvariable=entry_text_var)
 entry.pack()
-button = tk.Button(window, text="检测", command=check_unused_ips, font=("Arial", 12))
+button = tk.Button(window, text="检测", command=check_unused_ips_thread, font=("Arial", 12))
 button.pack(pady=10)
 progress_bar = ttk.Progressbar(window, orient=tk.HORIZONTAL, length=200, mode='determinate')
 progress_bar.pack(pady=10)
