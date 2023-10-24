@@ -118,11 +118,11 @@ class SetIPUI:
     def getAdapterInfo(self, event):
         key = self.cmb.get()
         adapter = self.configDic[key]
-        dhcp = self.getAdapterInfoImpl(key).EnableDHCPStr()
         if adapter is None:
             messagebox.showerror("错误", f"{self.cmb.get()}未连接或未启用")
             return
 
+        dhcp = self.getAdapterInfoImpl(key).EnableDHCPStr()
         self.entry_vars[0].set(dhcp)
         self.entry_vars[1].set(adapter['ip'])
         self.entry_vars[2].set(adapter['mask'])
@@ -160,7 +160,7 @@ class SetIPUI:
         try:
             command = f"netsh interface ipv4 set address name=\"{interface_name}\" static {ip_address} {subnet_mask}"
             # 使用netsh设置静态IP地址
-            subprocess.run(command, shell=True, check=True)
+            subprocess.run(command, shell=True,encoding='utf-8',check=True)
             messagebox.showinfo("完成", "已设置为静态IP地址")
         except subprocess.CalledProcessError as err:
             messagebox.showerror("错误", err.output)
