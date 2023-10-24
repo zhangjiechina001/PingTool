@@ -1,0 +1,27 @@
+{
+    "外部网": {
+        "dhcp": false,
+        "ip": "169.254.85.93",
+        "mask": "255.255.0.0"
+    },
+    "以太网": {
+        "dhcp": true,
+        "ip": "169.254.220.26",
+        "mask": "255.255.0.0"
+    },
+    "vEthernet (NAT)": {
+        "dhcp": false,
+        "ip": "192.168.1.120",
+        "mask": "255.255.255.0"
+    },
+    "vEthernet (CentOS_32Bit)": {
+        "dhcp": true,
+        "ip": "192.168.104.81",
+        "mask": "255.255.255.0"
+    },
+    "vEthernet (Default Switch)": {
+        "dhcp": false,
+        "ip": "172.23.144.1",
+        "mask": "255.255.240.0"
+    }
+}

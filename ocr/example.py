@@ -11,7 +11,7 @@ try:
 except ImportError:
     import Image
 
-img = cv2.imread('img2.png')
+img = cv2.imread('full2.jpg')
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
@@ -24,7 +24,10 @@ for c in cnts:
 	width_list.append(w)
 wm = np.median(width_list)
 
-tess_text = pytesseract.image_to_data(img, output_type=Output.DICT, lang='chi_sim')
+# 配置白名单以只识别数字和英文字符
+# custom_config = r'--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+custom_config =r'--psm 6 -c tessedit_char_whitelist=CrMoH'
+tess_text = pytesseract.image_to_data(img, output_type=Output.DICT,config=custom_config)
 for i in range(len(tess_text['text'])):
 	word_len = len(tess_text['text'][i])
 	if word_len > 1:
@@ -37,5 +40,7 @@ for i in range(len(tess_text['text'])):
 		draw.text((x, y - 20), tess_text['text'][i], (255, 0, 0), font=font)
 		img = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
 
+print(tess_text['text'])
 cv2.imshow("TextBoundingBoxes", img)
+cv2.imwrite('fullimg_deal.bmp',img)
 cv2.waitKey(0)
