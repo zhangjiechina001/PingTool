@@ -26,7 +26,7 @@ wm = np.median(width_list)
 
 # 配置白名单以只识别数字和英文字符
 # custom_config = r'--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-custom_config =r'--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+custom_config =r'--psm 6 -c tessedit_char_whitelist=CrMoH'
 tess_text = pytesseract.image_to_data(img, output_type=Output.DICT,config=custom_config)
 for i in range(len(tess_text['text'])):
 	word_len = len(tess_text['text'][i])
