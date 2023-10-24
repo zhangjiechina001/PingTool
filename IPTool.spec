@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['setip_ui.py'],
+    ['pingTool.py'],
     pathex=[],
     binaries=[],
     datas=[],
