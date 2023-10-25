@@ -16,7 +16,7 @@ image_cv = cv2.cvtColor(cv2.imread('full4.bmp'), cv2.COLOR_BGR2RGB)
 custom_config = r'--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 # 获取识别的字符边界框
 detection_boxes = pytesseract.image_to_boxes(image, output_type=pytesseract.Output.STRING, config=custom_config)
-
+print(pytesseract.image_to_osd(image,config=custom_config))
 img_h, img_w, _ = image_cv.shape
 # 遍历每个字符的边界框并绘制方框
 for box in detection_boxes.splitlines():

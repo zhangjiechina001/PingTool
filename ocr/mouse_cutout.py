@@ -1,10 +1,12 @@
 import cv2
-import cv2
 import pytesseract
 from PIL import Image
-from numpy import  ndarray
+from numpy import ndarray
+from tkinter import filedialog
+import tkinter as tk
 
 pytesseract.pytesseract.tesseract_cmd = "C:/Program Files (x86)/Tesseract-OCR/tesseract.exe"
+print(pytesseract.get_languages(config=''))
 
 
 class MouseCutOut:
@@ -27,18 +29,17 @@ class MouseCutOut:
         elif event == cv2.EVENT_LBUTTONUP:
             self.drawing = False
             img_cut = self.image[self.iy:y, self.ix:x]
-            print(self.ix, x, self.iy, y)
             self.draw_ocr(img_cut.copy())
 
     def draw_ocr(self, img):
         # 将OpenCV图像转换为PIL图像
         pil_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        custom_config = r'--psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+        # r'--psm 8 --oem 0 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+        custom_config = r'--psm 6 --oem 1 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
         # 获取识别的字符边界框
-        detection_boxes = pytesseract.image_to_boxes(pil_image, output_type=pytesseract.Output.STRING,
+        detection_boxes = pytesseract.image_to_boxes(pil_image, output_type=pytesseract.Output.STRING, lang='eng',
                                                      config=custom_config)
-        print(pytesseract.image_to_string(pil_image, output_type=pytesseract.Output.STRING,
-                                                     config=custom_config))
+        print(pytesseract.image_to_data(pil_image, config=custom_config, lang='eng'))
         img_h, img_w, _ = img.shape
         # 遍历每个字符的边界框并绘制方框
         for box in detection_boxes.splitlines():
@@ -52,9 +53,45 @@ class MouseCutOut:
         cv2.imshow("cut", img)
 
 
+class MouseUI:
+
+    def __init__(self, root_ui):
+        self.open_button = tk.Button(root_ui, text="Open Image", command=self.open_file)
+        self.open_button.pack()
+        self.setmid(root_ui)
+
+    # 创建一个回调函数来加载图像
+    def open_file(self):
+        file_path = filedialog.askopenfilename()  # 打开文件对话框
+        if file_path:
+            # 使用OpenCV读取图像
+            img = cv2.imread(file_path)
+            resize_img = img
+            cv2.imshow("Image", resize_img)
+            cutout = MouseCutOut(resize_img)
+            cv2.waitKey()
+
+    def setmid(self, root):
+        window_width = 580
+        window_height = 280
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        x = (screen_width - window_width) // 2
+        y = (screen_height - window_height) // 2
+        root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+
 # 读取图像
-img = cv2.imread('image/FineBody/Image_20231024161234704.bmp')
-resize_img=cv2.resize(img,(1920,1080))
-cv2.imshow("Image", resize_img)
-cutout = MouseCutOut(resize_img)
-cv2.waitKey()
+# img = cv2.imread('image/FineBody/Image_20231024161234704.bmp')
+# resize_img = cv2.resize(img, (1920, 1080))
+# cv2.imshow("Image", resize_img)
+# cutout = MouseCutOut(resize_img)
+# cv2.waitKey()
+
+if __name__ == '__main__':
+    ui_root = tk.Tk()
+    ui_root.title("OpenCV File Open")
+    ui = MouseUI(ui_root)
+    # Set the protocol to call the on_closing function when the window is closed
+    # ui_root.protocol("WM_DELETE_WINDOW", lambda : cv2.destroyAllWindows())
+    ui_root.mainloop()
