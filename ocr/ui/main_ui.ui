@@ -19,14 +19,14 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btnOpenFile">
         <property name="text">
          <string>打开文件</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="btnRecognize">
         <property name="text">
          <string>开始识别</string>
         </property>
@@ -83,7 +83,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="listWidget"/>
+       <widget class="QListWidget" name="listSelectAlgo"/>
       </item>
      </layout>
     </item>
