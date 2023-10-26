@@ -2,8 +2,8 @@
 /build/
 /dist/
 /venv/
-*/build/
-*/dist/
+*build/
+*dist/
 /tmp/
 */release/
 */Makefile*
