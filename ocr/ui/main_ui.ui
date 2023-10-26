@@ -15,7 +15,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -160,44 +160,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QComboBox" name="cmbAllAlgo">
-          <item>
-           <property name="text">
-            <string>二值化</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>滤波</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTextEdit" name="txtConfig"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnAdd">
-        <property name="text">
-         <string>&gt;&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListWidget" name="listSelectAlgo"/>
-      </item>
-     </layout>
+     <widget class="QTableWidget" name="tableWidget"/>
     </item>
    </layout>
   </widget>

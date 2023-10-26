@@ -14,6 +14,7 @@ print(pytesseract.get_languages(config=''))
 
 class MouseCutOut:
     def __init__(self, image):
+        self.img_cut = None
         self.whitelist = None
         self.psm = range(0, 14)
         self.oem = range(0, 4)
@@ -39,13 +40,13 @@ class MouseCutOut:
                 cv2.imshow("Image", img_copy)
         elif event == cv2.EVENT_LBUTTONUP:
             self.drawing = False
-            img_cut = self.image[self.iy:y, self.ix:x]
-            print('draw ocr')
-            self.draw_ocr(img_cut.copy())
+            self.img_cut = self.image[self.iy:y, self.ix:x]
 
-    def draw_ocr(self, img):
+    def recognize_ocr(self):
         # 将OpenCV图像转换为PIL图像
-        cvt_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        if self.img_cut is None:
+            return
+        cvt_img = cv2.cvtColor(self.img_cut, cv2.COLOR_BGR2RGB)
         pil_image = Image.fromarray(cvt_img)
         # r'--psm 8 --oem 2 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.'
         os.system('cls')

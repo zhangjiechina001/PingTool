@@ -10,12 +10,14 @@ from ocr.mouse_cutout import MouseCutOut
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+        self.mouse_cutout = None
         self.img_src = None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.set_listWidget()
         self.setWindowTitle('字符识别')
         self.ui.btnOpenFile.clicked.connect(self.open_file)
+        self.ui.btnRecognize.clicked.connect(self.recognize)
 
     def set_listWidget(self):
         for i in range(2):
@@ -39,10 +41,13 @@ class MainWindow(QMainWindow):
             return
 
         self.img_src = cv2.imread(file_name, cv2.IMREAD_COLOR)
-        mouse_cutout = MouseCutOut(self.img_src.copy())
-        mouse_cutout.setmode(self.get_values(self.ui.listOem), self.get_values(self.ui.listPsm),
-                             self.get_str(self.ui.listMode))
-        mouse_cutout.show()
+        self.mouse_cutout = MouseCutOut(self.img_src.copy())
+        self.mouse_cutout.show()
+
+    def recognize(self):
+        self.mouse_cutout.setmode(self.get_values(self.ui.listOem), self.get_values(self.ui.listPsm),
+                                  self.get_str(self.ui.listMode))
+        self.mouse_cutout.recognize_ocr()
 
     def get_values(self, listWidget: QListWidget):
         ret = []
