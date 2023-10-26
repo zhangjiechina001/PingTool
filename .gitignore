@@ -11,4 +11,5 @@
 src/temp/
 src/eigen-3.3.8/
 *.spec
+*
 
