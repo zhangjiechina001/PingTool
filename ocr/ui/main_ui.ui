@@ -7,15 +7,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>714</width>
-    <height>469</height>
+    <width>1007</width>
+    <height>732</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -48,44 +48,119 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QComboBox" name="cmbAllAlgo">
-          <item>
-           <property name="text">
-            <string>二值化</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>滤波</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>oem：</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QTextEdit" name="txtConfig"/>
+         <widget class="QListWidget" name="listOem"/>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="btnAdd">
-        <property name="text">
-         <string>&gt;&gt;</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>psm：</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="listPsm"/>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QListWidget" name="listSelectAlgo"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>mode：</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="listMode">
+          <item>
+           <property name="text">
+            <string>0123456789</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>abcdefghijklmnopqrstuvwxyz</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>.</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QTableWidget" name="tableWidget"/>
     </item>
    </layout>
   </widget>
@@ -94,8 +169,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>714</width>
-     <height>22</height>
+     <width>1007</width>
+     <height>23</height>
     </rect>
    </property>
   </widget>
