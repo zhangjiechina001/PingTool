@@ -8,7 +8,11 @@ from tkinter import filedialog
 import tkinter as tk
 from ocr.data.ocr_result import OcrResult
 
-pytesseract.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
+if os.path.exists("C:/Program Files (x86)/Tesseract-OCR/tesseract.exe"):
+    pytesseract.pytesseract.tesseract_cmd = "C:/Program Files (x86)/Tesseract-OCR/tesseract.exe"
+elif os.path.exists("C:/Program Files/Tesseract-OCR/tesseract.exe"):
+    pytesseract.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
+
 print(pytesseract.get_languages(config=''))
 
 
