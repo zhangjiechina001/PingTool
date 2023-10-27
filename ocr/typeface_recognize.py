@@ -1,12 +1,27 @@
 # 字体粗细识别
 import cv2
-import pytesseract
-import pytesseract_wrap
-from pytesseract import Output
+import numpy as np
 
-from PIL import Image
+img = cv2.imread("./image/BoldSingle/3030683Z.png")
+img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+cv2.imshow('img',img)
+cv2.namedWindow('binary',cv2.WINDOW_NORMAL)
+def callBack(x):
+    global img
+    global binary
+    binary=img
+    # kernel=cv2.getStructuringElement(cv2.MORPH_RECT,(x,x))
+    # binary=cv2.morphologyEx(binary,cv2.MORPH_CLOSE,kernel)
+    # binary=cv2.morphologyEx(binary,cv2.MORPH_OPEN,kernel)
+    src,binary=cv2.threshold(img,x,255,cv2.THRESH_OTSU)
+    cv2.imshow('binary',binary)
 
-image_to_test = Image.open('./image/hanzi.png')
-osd = pytesseract.image_to_osd(image_to_test, lang='eng', config='--oem 0')
-print(osd)
-cmd = r'--oem {0} -c tessedit_char_whitelist={1} '.format(0, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+cv2.namedWindow('binary')
+cv2.createTrackbar('reszieThreshold','binary',0,255,callBack)
+cv2.waitKey()
+cmd=input()
+if cmd=='save':
+    cv2.imwrite('unFloodAfterBinary.jpg',binary)
+    print('save susessful!')
+
+
