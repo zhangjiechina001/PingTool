@@ -3,6 +3,7 @@ import sys
 import cv2
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QListWidgetItem, QListWidget
+from PyQt5.QtGui import QIcon
 from main_ui import Ui_MainWindow
 from ocr.mouse_cutout import MouseCutOut
 

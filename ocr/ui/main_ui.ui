@@ -14,6 +14,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="rcc.qrc">
+    <normaloff>:/pic/icon/ocr.png</normaloff>:/pic/icon/ocr.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -176,6 +180,8 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="rcc.qrc"/>
+ </resources>
  <connections/>
 </ui>

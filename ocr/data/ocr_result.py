@@ -15,12 +15,15 @@ class OcrResult:
     def print_format(self):
         # 打印包含表头的二维数组
         print('oem\\psm', end='\t')
+        psm_names=['方向及语言检测','自动图片分割','自动图片分割(No OSD)','完全的自动图片分割','假设有一列不同大小的文本','假设有一个垂直对齐的文本块','假设有一个对齐的文本块',
+                   '图片为单行文本','图片为单词','图片为圆形的单词','图片为单个字符','稀疏文本','OSD稀疏文本','将图像视为单个文本行']
         for j in range(self.psm_count):
-            print('psm {0}'.format(j), end='\t')
+            print(psm_names[j], end='\t')
         print()
 
-        for i in range(self.oem_count):
-            print('oem {0}'.format(i), end='\t')
+        oem_names=['Legacy','LSTM']
+        for i in range(2):
+            print(oem_names[i], end='\t')
             for j in range(self.psm_count):
                 print(self.matrix[i, j], end="\t")
             print()  # 在行结束后换行

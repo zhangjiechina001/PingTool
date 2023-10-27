@@ -17,7 +17,7 @@ class MouseCutOut:
         self.img_cut = None
         self.whitelist = None
         self.psm = range(0, 14)
-        self.oem = range(0, 4)
+        self.oem = range(0, 2)
         self.ix = None
         self.iy = None
         self.image = image
@@ -124,7 +124,7 @@ class MouseUI:
 
 
 # 读取图像
-# img = cv2.imread('image/FineBody/Image_20231024161234704.bmp')
+# img = cv2.imread('image/ThinCharacter/Image_20231024161234704.bmp')
 # resize_img = cv2.resize(img, (1920, 1080))
 # cv2.imshow("Image", resize_img)
 # cutout = MouseCutOut(resize_img)

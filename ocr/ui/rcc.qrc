@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="pic">
+    <file>icon/ocr.png</file>
+  </qresource>
+  <qresource prefix="newPrefix"/>
+</RCC>
