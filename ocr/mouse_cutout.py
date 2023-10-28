@@ -8,11 +8,11 @@ from tkinter import filedialog
 import tkinter as tk
 from ocr.data.ocr_result import OcrResult
 import ocr.pytesseract_wrap
-
+from ocr.pytesseract_wrap import PytesseractWrap
 
 
 class MouseCutOut:
-    def __init__(self, image):
+    def __init__(self, image=None):
         self.img_cut = None
         self.whitelist = None
         self.psm = range(0, 14)
@@ -22,9 +22,7 @@ class MouseCutOut:
         self.image = image
         self.drawing = False
 
-    def setmode(self, oem: list, psm: list, whitelist: str):
-        self.oem = oem
-        self.psm = psm
+    def setmode(self, whitelist: str):
         self.whitelist = whitelist
         print(self.whitelist)
 
@@ -41,28 +39,33 @@ class MouseCutOut:
             self.drawing = False
             self.img_cut = self.image[self.iy:y, self.ix:x]
 
-    def recognize_ocr(self):
+    def recognize_ocr(self) -> OcrResult:
         # 将OpenCV图像转换为PIL图像
         if self.img_cut is None:
             return
+
+        wrap = PytesseractWrap(self.img_cut)
+        wrap.set_enable_wordlist(False)
+        ret=wrap.recognize()
+        return ret
         cvt_img = cv2.cvtColor(self.img_cut, cv2.COLOR_BGR2RGB)
         pil_image = Image.fromarray(cvt_img)
         # r'--psm 8 --oem 2 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.'
         os.system('cls')
-        ocr_result = OcrResult(4, 14)
+        ocr_result = OcrResult(2, 14)
         for oem_item in self.oem:
             print('*' * 30)
             for psm_item in self.psm:
                 temp = ''
                 try:
                     cmd = r'--psm {0} --oem {1} --user-words eng.user-words -c tessedit_char_whitelist={2} ' \
-                          r'-c load_system_dawg=true -c load_freq_dawg=true' \
-                          r'-c '.format(psm_item, oem_item,self.whitelist)
+                          r'-c load_system_dawg=true -c load_freq_dawg=true'.format(psm_item, oem_item, self.whitelist)
                     temp = pytesseract.image_to_string(pil_image, config=cmd, lang='eng')
                 except Exception as err:
                     temp = 'err'
                 ocr_result.set_value(oem_index=oem_item, psm_index=psm_item, val=temp)
-        ocr_result.print_format()
+
+        return ocr_result
 
     def show(self):
         cv2.imshow('Image', self.image)

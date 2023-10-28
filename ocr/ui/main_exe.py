@@ -6,32 +6,36 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QListWidgetI
 from PyQt5.QtGui import QIcon
 from main_ui import Ui_MainWindow
 from ocr.mouse_cutout import MouseCutOut
+from ocr.data.ocr_result import OcrResult
+from ocr.pytesseract_wrap import PytesseractWrap
+import ui_helper
 
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
-        self.mouse_cutout = None
+        self.mouse_cutout = MouseCutOut()
         self.img_src = None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.set_listWidget()
+
+        psm_names = ['方向及语言检测', '自动图片分割', '自动图片分割(No OSD)', '完全的自动图片分割',
+                     '假设有一列不同大小的文本', '假设有一个垂直对齐的文本块', '假设有一个对齐的文本块',
+                     '图片为单行文本', '图片为单词', '图片为圆形的单词', '图片为单个字符', '稀疏文本', 'OSD稀疏文本',
+                     '将图像视为单个文本行']
+        self.set_listWidget(psm_names, self.ui.listPsm)
+        ui_helper.set_table_header(self.ui.tableWidget, OcrResult.get_header())
+
         self.setWindowTitle('字符识别')
         self.ui.btnOpenFile.clicked.connect(self.open_file)
         self.ui.btnRecognize.clicked.connect(self.recognize)
 
-    def set_listWidget(self):
-        for i in range(2):
+    def set_listWidget(self, names, listWidget: QListWidget):
+        for index in range(len(names)):
             item = QListWidgetItem()
-            item.setCheckState(Qt.Checked)
-            item.setData(Qt.DisplayRole, i)
-            self.ui.listOem.addItem(item)
-
-        for i in range(14):
-            item = QListWidgetItem()
-            item.setCheckState(Qt.Checked)
-            item.setData(Qt.DisplayRole, i)
-            self.ui.listPsm.addItem(item)
+            # item.setCheckState(Qt.Checked)
+            item.setData(Qt.DisplayRole, '{0}.{1}'.format(index, names[index]))
+            listWidget.addItem(item)
 
     def open_file(self):
         options = QFileDialog.Options()
@@ -46,9 +50,20 @@ class MainWindow(QMainWindow):
         self.mouse_cutout.show()
 
     def recognize(self):
-        self.mouse_cutout.setmode(self.get_values(self.ui.listOem), self.get_values(self.ui.listPsm),
-                                  self.get_str(self.ui.listMode))
-        self.mouse_cutout.recognize_ocr()
+        self.mouse_cutout.setmode(self.get_str(self.ui.listMode))
+        if self.mouse_cutout.img_cut.any():
+            wrap = PytesseractWrap(self.mouse_cutout.img_cut)
+            wrap.set_whitelist(self.get_str(self.ui.listMode))
+            wrap.set_enable_wordlist(self.ui.radWordlist.isChecked())
+            ocr_result = wrap.recognize()
+            for item in ocr_result.get_map():
+                ui_helper.add_item(self.ui.tableWidget, item, OcrResult.get_header())
+        # if self.ui.radDefault:
+
+        # ocr_result = self.mouse_cutout.recognize_ocr()
+        # for item in ocr_result.get_map():
+        #     ui_helper.add_item(self.ui.tableWidget, item, OcrResult.get_header())
+        # ocr_result.print_format()
 
     def get_values(self, listWidget: QListWidget):
         ret = []
@@ -69,5 +84,7 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ui = MainWindow()
+    icon = QIcon('./icon/ocr.png')
+    ui.setWindowIcon(icon)
     ui.show()
     sys.exit(app.exec_())
