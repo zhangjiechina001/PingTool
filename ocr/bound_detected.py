@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # 读取图像
-image = cv2.imread('image/BoldSingle/3030683Z.png')
+image = cv2.imread('image/BoldSingle/3030683Z_good.png')
 
 cv2.imshow('image', image)
 
