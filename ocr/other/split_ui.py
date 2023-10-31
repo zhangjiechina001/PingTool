@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'bound_ui.ui'
+# Form implementation generated from reading ui file 'split_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.0
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(994, 673)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -39,6 +39,11 @@ class Ui_MainWindow(object):
         self.btnOpenFile.setMaximumSize(QtCore.QSize(16777215, 20))
         self.btnOpenFile.setObjectName("btnOpenFile")
         self.horizontalLayout_3.addWidget(self.btnOpenFile)
+        self.btnSaveFile = QtWidgets.QPushButton(self.centralwidget)
+        self.btnSaveFile.setMinimumSize(QtCore.QSize(0, 20))
+        self.btnSaveFile.setMaximumSize(QtCore.QSize(16777215, 20))
+        self.btnSaveFile.setObjectName("btnSaveFile")
+        self.horizontalLayout_3.addWidget(self.btnSaveFile)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -52,6 +57,9 @@ class Ui_MainWindow(object):
         self.label_4.setSizePolicy(sizePolicy)
         self.label_4.setObjectName("label_4")
         self.horizontalLayout.addWidget(self.label_4)
+        self.cmbThresholdType = QtWidgets.QComboBox(self.centralwidget)
+        self.cmbThresholdType.setObjectName("cmbThresholdType")
+        self.horizontalLayout.addWidget(self.cmbThresholdType)
         self.sliderBinary = QtWidgets.QSlider(self.centralwidget)
         self.sliderBinary.setOrientation(QtCore.Qt.Horizontal)
         self.sliderBinary.setObjectName("sliderBinary")
@@ -91,12 +99,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.label_7)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.horizontalLayout_3.addLayout(self.verticalLayout)
-        self.horizontalLayout_3.setStretch(0, 1)
-        self.horizontalLayout_3.setStretch(1, 1)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 994, 23))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -112,8 +118,9 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.lblBinary.setText(_translate("MainWindow", "二值化"))
-        self.lblBound.setText(_translate("MainWindow", "寻找边界"))
+        self.lblBound.setText(_translate("MainWindow", "图像分割"))
         self.btnOpenFile.setText(_translate("MainWindow", "打开文件"))
+        self.btnSaveFile.setText(_translate("MainWindow", "保存文件"))
         self.label_4.setText(_translate("MainWindow", "二值化:"))
         self.label_5.setText(_translate("MainWindow", "1"))
         self.label_6.setText(_translate("MainWindow", "开闭核:"))
