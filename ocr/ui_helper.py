@@ -45,6 +45,6 @@ def cv_to_qt(image: ndarray):
     q_image = QImage(image.data, width, height, bytes_per_line, QImage.Format_RGB888)
     return q_image
 
+
 def cv_to_qpic(image: ndarray):
-    q_image=cv_to_qt(image)
-    return QPixmap.fromImage(cv_to_qt(q_image))
+    return QPixmap.fromImage(cv_to_qt(image))

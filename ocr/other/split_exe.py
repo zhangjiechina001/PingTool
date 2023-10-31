@@ -67,13 +67,24 @@ class MainWindow(QMainWindow):
         binary, contours = self.find_contours(self.img_src.copy(), kernel_size)
         self.ui.lblBinary.setPixmap(ui_helper.cv_to_qpic(binary))
 
-        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         image_copy = self.img_src.copy()
         # 使用filter函数筛选轮廓
         filtered_contours = self.filter_contours(contours)
         order_c = self.order_contours(filtered_contours, 'y')
         self.draw_contours(order_c, image_copy, True)
         self.ui.lblBound.setPixmap(ui_helper.cv_to_qpic(image_copy))
+
+        x,y,w,h=cv2.boundingRect(order_c[0])
+        image_split=self.img_src.copy()[y:y+h,x:x+w]
+        self.__y_split(image_split,10)
+
+    def __y_split(self,image:ndarray,kernel_size:int):
+        binary, contours = self.find_contours(image.copy(),kernel_size)
+        filtered_contours = self.filter_contours(contours)
+        order_c = self.order_contours(filtered_contours, 'x')
+        self.draw_contours(order_c, image, True)
+        cv2.imshow('y_split',image)
+
 
     def filter_contours(self, contours: List[np.ndarray]):
         filtered_contours = []
@@ -92,11 +103,6 @@ class MainWindow(QMainWindow):
         sorted_contours = sorted(contours, key=contour_sort_key)
         return sorted_contours
 
-    def recognize_type(self, contours: List[np.ndarray]):
-        max_contour = max(contours, key=lambda c: cv2.contourArea(c))
-        print(cv2.contourArea(max_contour))
-        return "粗体" if cv2.contourArea(max_contour) < 70000 else "细体"
-
     # 按行分割图片
     def split_img(self, image: ndarray, line_pos: int, contours: List[np.ndarray]):
         filter_contours = []
@@ -106,7 +112,6 @@ class MainWindow(QMainWindow):
                 filter_contours.append(c)
         order_contours = sorted(filter_contours, key=lambda c: cv2.boundingRect(c)[0])
         # order_contours = sorted(order_contours, key=lambda c: cv2.boundingRect(c)[1])
-        rectangs = map(lambda c: cv2.boundingRect(c), order_contours)
         print('order_contours:', len(order_contours))
         x1, y1, _, _ = cv2.boundingRect(order_contours[0])
         xt, yt, wt, ht = cv2.boundingRect(order_contours[-1])
