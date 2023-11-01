@@ -64,7 +64,7 @@ def draw_contours(contours, image, isRect: bool):
     return image
 
 
-def get_angle(contours: List[np.ndarray]):
+def get_angles(contours: List[np.ndarray]):
     ret = []
     for contour in contours:
         rotated_rect = cv2.minAreaRect(contour)  # 计算带方向的外接矩形
@@ -72,45 +72,39 @@ def get_angle(contours: List[np.ndarray]):
         if angle < -45:
             angle += 90  # 使角度范围在-45到45度之间
         print(angle)
-        ret.append(angle)
+        ret.append((angle, center))
     return ret
 
-# def deflection(img:ndarray,):
 
+def get_angle_avg(contours: List[np.ndarray]):
+    angles = get_angles(contours)
+    angle_avg = np.mean([angle for angle, _ in angles])
+    center = angles[0][1]
+    return angle_avg
+
+
+def rotate(img: ndarray, angle, center):
+    # 创建仿射变换矩阵
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    # 执行仿射变换
+    rectified_region = cv2.warpAffine(img.copy(), M, (img.shape[1], img.shape[0]))
+    return rectified_region
 
 
 if __name__ == '__main__':
+    # pass
     img = cv2.imread('../image/ThinSingle/3030138Z_blur.png')
     binary, contours = find_contours(img, 40)
     filtered_c = filter_contours(contours, 5000)
     order_c = order_contours(filtered_c, 'y')
 
     cv2.imshow('image', draw_contours(order_c, img.copy(), isRect=True))
-
+    angles = get_angles(order_c)
+    angle_avg = np.mean([angle for angle, _ in angles])
+    center = angles[0][1]
+    center = img.shape[0] / 2, img.shape[1] / 2
+    # 执行仿射变换
+    rectified_region = rotate(img, angle_avg, center)
+    cv2.imshow(f'Rectified Region', rectified_region)
     rectified_regions = []
-    for contour in order_c:
-        rotated_rect = cv2.minAreaRect(contour)  # 计算带方向的外接矩形
-        center, size, angle = rotated_rect
-        if angle < -45:
-            angle += 90  # 使角度范围在-45到45度之间
-        print(angle)
-        # 创建仿射变换矩阵
-        M = cv2.getRotationMatrix2D(center, angle, 1.0)
-
-        # 执行仿射变换
-        rectified_region = cv2.warpAffine(img.copy(), M, (img.shape[1], img.shape[0]))
-
-        # 截取校正后的区域
-        x, y, w, h = cv2.boundingRect(contour)
-        # rectified_region = rectified_region[y:y + h, x:x + w]
-        # rectified_region = rectified_region[y:y + h, x:x + w]
-
-        # 存储校正后的区域
-        rectified_regions.append(rectified_region)
-
-    # 显示校正后的区域
-    for i, region in enumerate(rectified_regions):
-        cv2.imshow(f'Rectified Region {i}', region)
-
     cv2.waitKey()
-# ordered_c=order_contours(filtered_c,)

@@ -72,20 +72,19 @@ class MainWindow(QMainWindow):
         # 使用filter函数筛选轮廓
         filtered_contours = self.filter_contours(contours)
         order_c = self.order_contours(filtered_contours, 'y')
-        deflection_correction.draw_contours(order_c,image_copy,isRect=True)
+        deflection_correction.draw_contours(order_c, image_copy, isRect=True)
         self.ui.lblBound.setPixmap(ui_helper.cv_to_qpic(image_copy))
 
-        x,y,w,h=cv2.boundingRect(order_c[0])
-        image_split=self.img_src.copy()[y:y+h,x:x+w]
-        self.__y_split(image_split,10)
+        x, y, w, h = cv2.boundingRect(order_c[0])
+        image_split = self.img_src.copy()[y:y + h, x:x + w]
+        self.__y_split(image_split, 2)
 
-    def __y_split(self,image:ndarray,kernel_size:int):
-        binary, contours = self.find_contours(image.copy(),kernel_size)
-        filtered_contours = self.filter_contours(contours)
+    def __y_split(self, image: ndarray, kernel_size: int):
+        binary, contours = self.find_contours(image.copy(), kernel_size)
+        filtered_contours = deflection_correction.filter_contours(contours, 300)
         order_c = self.order_contours(filtered_contours, 'x')
         self.draw_contours(order_c, image, True)
-        cv2.imshow('y_split',image)
-
+        cv2.imshow('y_split', image)
 
     def filter_contours(self, contours: List[np.ndarray]):
         filtered_contours = []
