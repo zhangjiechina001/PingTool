@@ -13,6 +13,7 @@ from ocr.pytesseract_wrap import PytesseractWrap
 
 import ocr.ui_helper as ui_helper
 from split_ui import Ui_MainWindow
+import deflection_correction
 
 
 class MainWindow(QMainWindow):
@@ -71,7 +72,7 @@ class MainWindow(QMainWindow):
         # 使用filter函数筛选轮廓
         filtered_contours = self.filter_contours(contours)
         order_c = self.order_contours(filtered_contours, 'y')
-        self.draw_contours(order_c, image_copy, True)
+        deflection_correction.draw_contours(order_c,image_copy,isRect=True)
         self.ui.lblBound.setPixmap(ui_helper.cv_to_qpic(image_copy))
 
         x,y,w,h=cv2.boundingRect(order_c[0])
