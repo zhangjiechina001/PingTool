@@ -9,7 +9,7 @@ from ocr.mouse_cutout import MouseCutOut
 from ocr.data.ocr_result import OcrResult
 from ocr.pytesseract_wrap import PytesseractWrap
 import ui_helper
-
+import ocr.other.deflection_correction as dc
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('字符识别')
         self.ui.btnOpenFile.clicked.connect(self.open_file)
         self.ui.btnRecognize.clicked.connect(self.recognize)
+        self.ui.btnCorrect.clicked.connect(self.correct)
 
     def set_listWidget(self, names, listWidget: QListWidget):
         for index in range(len(names)):
@@ -46,6 +47,11 @@ class MainWindow(QMainWindow):
             return
 
         self.img_src = cv2.imread(file_name, cv2.IMREAD_COLOR)
+        self.mouse_cutout = MouseCutOut(self.img_src.copy())
+        self.mouse_cutout.show()
+
+    def correct(self):
+        self.img_src=dc.correct(self.img_src.copy())
         self.mouse_cutout = MouseCutOut(self.img_src.copy())
         self.mouse_cutout.show()
 

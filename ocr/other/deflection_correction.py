@@ -17,7 +17,6 @@ def find_contours(image: ndarray, kernel_size: int):
 
     # THRESH_OTSU的效果比较好,而且不需要调参数
     _, binary = cv2.threshold(iter_img, 0, 255, cv2.THRESH_OTSU)
-    print(binary.shape)
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return binary, contours
 
@@ -46,23 +45,21 @@ def draw_contours(contours, image, isRect: bool):
     index = 0
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
-
         if isRect:
-            rotated_rect = cv2.minAreaRect(contour)
-            center, size, angle = rotated_rect
-            print('angle:', angle)
-            box = cv2.boxPoints(rotated_rect)  # 获取外接矩形的四个顶点
-            box = np.intp(box)
-            cv2.drawContours(image, [box], 0, (0, 255, 0), 2)  # 绘制带方向的外接矩形
+            draw_rect((x, y,x+w, y+h),image)
         else:
-            cv2.drawContours(image, [contour], -1, (0, 0, 255), 2)
+            cv2.drawContours(image, [contour], -1, (0, 0, 255), 1)
 
         cv2.putText(image, str(index), (x, y), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1,
-                    color=(0, 255, 0))  # 绿色文本)
+                    color=(0, 0, 255))  # 绿色文本)
         index += 1
 
     return image
 
+
+def draw_rect(pos,image):
+    x1,y1,x2,y2=pos
+    cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)  # 绘制带方向的外接矩形
 
 def get_angles(contours: List[np.ndarray]):
     ret = []
@@ -71,7 +68,6 @@ def get_angles(contours: List[np.ndarray]):
         center, size, angle = rotated_rect
         if angle < -45:
             angle += 90  # 使角度范围在-45到45度之间
-        print(angle)
         ret.append((angle, center))
     return ret
 
@@ -79,7 +75,6 @@ def get_angles(contours: List[np.ndarray]):
 def get_angle_avg(contours: List[np.ndarray]):
     angles = get_angles(contours)
     angle_avg = np.mean([angle for angle, _ in angles])
-    center = angles[0][1]
     return angle_avg
 
 
@@ -88,6 +83,17 @@ def rotate(img: ndarray, angle, center):
     M = cv2.getRotationMatrix2D(center, angle, 1.0)
     # 执行仿射变换
     rectified_region = cv2.warpAffine(img.copy(), M, (img.shape[1], img.shape[0]))
+    return rectified_region
+
+
+def correct(img: ndarray):
+    binary, contours = find_contours(img, 40)
+    filtered_c = filter_contours(contours, 5000)
+    order_c = order_contours(filtered_c, 'y')
+    angle = get_angle_avg(order_c)
+    center = img.shape[0] / 2, img.shape[1] / 2
+    # 执行仿射变换
+    rectified_region = rotate(img, angle, center)
     return rectified_region
 
 

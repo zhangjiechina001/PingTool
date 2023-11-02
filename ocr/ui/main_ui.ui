@@ -30,6 +30,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="btnCorrect">
+        <property name="text">
+         <string>矫正</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnRecognize">
         <property name="text">
          <string>开始识别</string>

@@ -27,6 +27,9 @@ class Ui_MainWindow(object):
         self.btnOpenFile = QtWidgets.QPushButton(self.centralwidget)
         self.btnOpenFile.setObjectName("btnOpenFile")
         self.horizontalLayout.addWidget(self.btnOpenFile)
+        self.btnCorrect = QtWidgets.QPushButton(self.centralwidget)
+        self.btnCorrect.setObjectName("btnCorrect")
+        self.horizontalLayout.addWidget(self.btnCorrect)
         self.btnRecognize = QtWidgets.QPushButton(self.centralwidget)
         self.btnRecognize.setObjectName("btnRecognize")
         self.horizontalLayout.addWidget(self.btnRecognize)
@@ -113,6 +116,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.btnOpenFile.setText(_translate("MainWindow", "打开文件"))
+        self.btnCorrect.setText(_translate("MainWindow", "矫正"))
         self.btnRecognize.setText(_translate("MainWindow", "开始识别"))
         self.groupBox.setTitle(_translate("MainWindow", "测量模式"))
         self.radDefault.setText(_translate("MainWindow", "普通"))

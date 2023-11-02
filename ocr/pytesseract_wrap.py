@@ -20,7 +20,7 @@ class PytesseractWrap:
         self.pil_img = Image.fromarray(cvt_img)
         self.enable_wordlist = False
         self.whitelist = ''
-        self.psm = range(0, 14)
+        self.psm = range(6, 14)
         self.oem = range(0, 2)
 
     def set_enable_wordlist(self, enable: bool):
@@ -40,7 +40,7 @@ class PytesseractWrap:
     # 指令实例
     # tesseract 1.PNG stdout --psm 11 --oem 0 -c tessedit_char_whitelist=013456789Z bazaar
 
-    def image_to_string(self, psm_item, oem_item):
+    def image_to_string(self, psm_item, oem_item, isTrim=False):
         try:
             cmd = r'--psm {0} --oem {1} --user-words eng.user-words -c tessedit_char_whitelist={2} ' \
                   r'-c load_system_dawg=true -c load_freq_dawg=true' \
@@ -49,7 +49,7 @@ class PytesseractWrap:
             temp = pytesseract.image_to_string(self.pil_img, config=cmd, lang='eng')
         except BaseException as err:
             temp = 'err'
-        return temp
+        return temp.replace(" ", "").replace("\t", "").replace("\n", "") if isTrim else temp
 
     def recognize(self) -> OcrResult:
         ocr_result = OcrResult(2, 14)
