@@ -2,6 +2,7 @@ import pytesseract
 import os
 import cv2
 from PIL import Image
+from numpy import ndarray
 
 from ocr.data.ocr_result import OcrResult
 
@@ -15,9 +16,9 @@ print(pytesseract.get_tesseract_version())
 
 
 class PytesseractWrap:
-    def __init__(self, cv2_img):
-        cvt_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
-        self.pil_img = Image.fromarray(cvt_img)
+    def __init__(self, cv2_img:ndarray):
+        cv2_img=cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB) if len(cv2_img.shape)==3 else cv2_img
+        self.pil_img = Image.fromarray(cv2_img)
         self.enable_wordlist = False
         self.whitelist = ''
         self.psm = range(6, 14)
