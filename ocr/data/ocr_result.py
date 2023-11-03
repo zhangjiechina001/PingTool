@@ -2,6 +2,8 @@ import numpy as np
 
 
 class OcrResult:
+    brands = ["20CrMoH"]
+
     def __init__(self, oem_count, psm_count):
         self.oem_count = oem_count
         self.psm_count = psm_count

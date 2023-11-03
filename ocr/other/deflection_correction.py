@@ -40,13 +40,13 @@ def order_contours(contours: List[np.ndarray], direction: str):
     return sorted_contours
 
 
-def draw_contours(contours, image, isRect: bool):
+def draw_contours(contours, image, isRect: bool,margin=0):
     # 遍历轮廓并绘制实际轮廓
     index = 0
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
         if isRect:
-            draw_rect((x, y,x+w, y+h),image)
+            draw_rect((x+margin, y+margin,x+w-margin, y+h-margin),image)
         else:
             cv2.drawContours(image, [contour], -1, (0, 0, 255), 1)
 

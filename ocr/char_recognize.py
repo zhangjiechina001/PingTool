@@ -10,13 +10,21 @@ from pytesseract_wrap import PytesseractWrap
 class RecognizeParam:
     psms = range(1, 14)
     oems = [1, 0]
+    brands = ['20CrMoH']
 
-    def __init__(self, start, end, whitelist, psm, oem):
+    def __init__(self, start, end, whitelist, psm, oem, is_brand=False):
         self.start = start
         self.end = end
         self.whitelist = whitelist
         self.psm = psm
         self.oem = oem
+        self.is_brand = is_brand
+
+    def compare(self, input):
+        if self.is_brand:
+            return input in RecognizeParam.brands
+
+        return len(input) == (self.end - self.start + 1)
 
 
 class CharRecognize:
@@ -48,6 +56,7 @@ class CharRecognize:
         center = img_copy.shape[0] / 2, img_copy.shape[1] / 2
         print('angle_avg', angle_avg)
         self.img = dfc.rotate(img_copy, angle_avg, center)
+        cv2.imwrite('rotated.png',self.img)
         self.img_show = self.img.copy()
 
     def split_image_by_y(self, img: ndarray, margin=2):
@@ -106,7 +115,7 @@ class CharRecognize:
         x1, y1, _, _ = cv2.boundingRect(contours[start])
         x, y, w, h = cv2.boundingRect(contours[end])
         x2, y2 = x + w, y + h
-        correct=lambda val:val if val>=0 else 0
+        correct = lambda val: val if val >= 0 else 0
 
         return (correct(x1 - margin), correct(y1 - margin)), (x2 + margin, y2 + margin)
 
@@ -131,29 +140,25 @@ class CharRecognize:
             (x1, y1), (x2, y2) = (x1 + x_start, y1 + y_start), (x2 + x_start, y2 + y_start)
             margin = 0
             number_img = self.img[y1 - margin:y2 + margin, x1 - margin:x2 + margin]
-            cv2.imshow(str(start), number_img)
             dfc.draw_rect((x1 - margin, y1 + margin, x2 - margin, y2 + margin), self.img_show)
-            ret += self.recognize_img(p,img=number_img)
+            ret += self.recognize_img(p, img=number_img)
 
         print(ret)
 
-    def recognize_img(self, p: RecognizeParam, img:ndarray):
-        # temp=cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
-        # _,img=cv2.threshold(temp,0,255,cv2.THRESH_OTSU)
-        # img=cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-        tessacter=PytesseractWrap(img)
+    def recognize_img(self, p: RecognizeParam, img: ndarray):
+        tessacter = PytesseractWrap(img)
         tessacter.set_whitelist(p.whitelist)
         tessacter.set_enable_wordlist(True)
         recognize_result = tessacter.image_to_string(p.psm, p.oem, isTrim=True)
-        if len(recognize_result) == (p.end - p.start + 1):
+        if p.compare(recognize_result):
             return recognize_result
 
         for oem in p.oems:
             for i in p.psms:
                 recognize_result = tessacter.image_to_string(i, oem, isTrim=True)
-                if len(recognize_result) == (p.end - p.start + 1):
+                if p.compare(recognize_result):
                     return recognize_result
-        return "err"
+        return recognize_result
 
     def recognize_row2(self, img_src):
         tessacter = PytesseractWrap(cv2_img=img_src)
@@ -171,23 +176,24 @@ class CharRecognize:
 
 
 if __name__ == '__main__':
-    img = cv2.imread('full4.bmp')
+    img = cv2.imread('rotated_11.png')
     recognize = CharRecognize(img)
     recognize.auto_rotate()
     cv2.imshow('rotated', recognize.img)
     try:
         row_imgs = recognize.split_image_by_y(recognize.img)
         # 单个字符h=80 w=50
-        row1_params = [RecognizeParam(0, 6, CharRecognize.number_char, 13, 0),
+        row1_params = [RecognizeParam(0, 6, CharRecognize.number_char, 13, 1),
                        RecognizeParam(7, 7, CharRecognize.english_capital_char, 13, 0)]
         recognize.recognize_row_contours1(row_imgs[0], row1_params)
 
-        row2_params = [RecognizeParam(0, 6, CharRecognize.number_char, 13, 0)]
+        row2_params = [RecognizeParam(0, 6, CharRecognize.number_char, 13, 1)]
         # cv2.imshow('row2', row_imgs[1])
         recognize.recognize_row_contours1(row_imgs[1], row2_params)
 
-        row3_params = [RecognizeParam(0, 6, CharRecognize.number_char+CharRecognize.english_capital_char+CharRecognize.english_lowercase_char, 13, 1)]
-        # cv2.imshow('row3', row_imgs[2])
+        row3_params = [RecognizeParam(0, 6,
+                                      CharRecognize.number_char + CharRecognize.english_capital_char + CharRecognize.english_lowercase_char,
+                                      12, 1,is_brand=True)]
         recognize.recognize_row_contours1(row_imgs[2], row3_params)
 
     except Exception as err:
