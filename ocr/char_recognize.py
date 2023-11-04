@@ -3,7 +3,7 @@ from typing import List
 import cv2
 import numpy as np
 from numpy import ndarray
-from other import deflection_correction as dfc
+import cv_utils as dfc
 from pytesseract_wrap import PytesseractWrap
 from ocr.char_valid import FurnaceNumberValid, IndexValid, LengthValid, BrandValid
 

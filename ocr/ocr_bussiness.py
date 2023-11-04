@@ -7,7 +7,7 @@ from typing import Tuple
 import cv_utils as dfc
 from char_recognize import CharRecognize, RecognizeParam
 import cv_utils
-
+from char_grid import CharGrid
 
 class SampleResult:
     def __init__(self, furnace_number='', index='', length='', brand=''):
@@ -49,10 +49,13 @@ class OcrProcess:
     4.字符识别
     '''
 
-    def __init__(self):
-        x1, y1, x2, y2 = cv_utils.location(img_src, -30)
-        self.img_location = img_src[y1:y2, x1:x2]
-        self.rotated = cv_utils.auto_rotate(self.img_location)
+    def __init__(self,img_src=ndarray):
+        self.img_src=img_src
+        img_copy=img_src.copy()
+        x1, y1, x2, y2 = cv_utils.location(img_copy, -30)
+        self.img_location = img_copy[y1:y2, x1:x2]
+        self.img_rotated = cv_utils.auto_rotate(self.img_location)
+        self.grid=CharGrid(self.img_rotated)
 
 
 def recognize(img_char: ndarray) -> Tuple[ndarray, SampleResult]:
@@ -92,9 +95,10 @@ def recognize(img_char: ndarray) -> Tuple[ndarray, SampleResult]:
 
 if __name__ == '__main__':
     img_src = cv2.imread('12.png', cv2.IMREAD_COLOR)
-    img_char = location(img_src)
-    cv2.imshow('img_char', img_char)
-
-    recognized_img, _ = recognize(img_char)
-    cv2.imshow('recognized', recognized_img)
+    ocr_p=OcrProcess(img_src)
+    # img_show = location(img_src)
+    cv2.imshow('img_src', ocr_p.img_src)
+    cv2.imshow('img_location', ocr_p.img_location)
+    cv2.imshow('img_rotated', ocr_p.img_rotated)
+    cv2.imshow('img_grid', ocr_p.grid.img_show)
     cv2.waitKey()
