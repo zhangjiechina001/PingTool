@@ -5,6 +5,7 @@ import numpy as np
 from numpy import ndarray
 from other import deflection_correction as dfc
 from pytesseract_wrap import PytesseractWrap
+from ocr.char_valid import FurnaceNumberValid, IndexValid, LengthValid, BrandValid
 
 
 class RecognizeParam:
@@ -12,19 +13,35 @@ class RecognizeParam:
     oems = [1, 0]
     brands = ['20CrMoH']
 
-    def __init__(self, start, end, whitelist, psm, oem, is_brand=False):
+    # 炉号
+    TYPE_FURNACE_NUMBER = 1
+    # 序列号
+    TYPE_INDEX = 2
+    # 扁棒长度
+    TYPE_LENGTH = 3
+    # 牌号
+    TYPE_BRAND = 4
+
+    def __init__(self, start, end, whitelist, psm, oem, char_type=0):
         self.start = start
         self.end = end
         self.whitelist = whitelist
         self.psm = psm
         self.oem = oem
-        self.is_brand = is_brand
+        # self.is_brand = is_brand
+        self.char_type = char_type
 
-    def compare(self, input):
-        if self.is_brand:
-            return input in RecognizeParam.brands
-
-        return len(input) == (self.end - self.start + 1)
+    def compare(self, input) -> bool:
+        dic = {
+            RecognizeParam.TYPE_FURNACE_NUMBER: FurnaceNumberValid(),
+            RecognizeParam.TYPE_INDEX: IndexValid(),
+            RecognizeParam.TYPE_LENGTH: LengthValid(),
+            RecognizeParam.TYPE_BRAND: BrandValid()
+        }
+        if self.char_type in dic:
+            return dic[self.char_type].valid(input)
+        else:
+            return True
 
 
 class CharRecognize:
@@ -56,7 +73,7 @@ class CharRecognize:
         center = img_copy.shape[0] / 2, img_copy.shape[1] / 2
         print('angle_avg', angle_avg)
         self.img = dfc.rotate(img_copy, angle_avg, center)
-        cv2.imwrite('rotated.png',self.img)
+        cv2.imwrite('rotated.png', self.img)
         self.img_show = self.img.copy()
 
     def split_image_by_y(self, img: ndarray, margin=2):
@@ -120,7 +137,7 @@ class CharRecognize:
         return (correct(x1 - margin), correct(y1 - margin)), (x2 + margin, y2 + margin)
 
     def recognize_row_contours1(self, contour, params: List[RecognizeParam]):
-        (x_start, y_start), (x_end, y_end) = self.combine_contours([contour], 0, 0, 5)
+        (x_start, y_start), (x_end, y_end) = self.combine_contours([contour], 0, 0, 10)
         img_ = self.img[y_start:y_end, x_start:x_end]
 
         if len(params) == 1:
@@ -187,13 +204,14 @@ if __name__ == '__main__':
                        RecognizeParam(7, 7, CharRecognize.english_capital_char, 13, 0)]
         recognize.recognize_row_contours1(row_imgs[0], row1_params)
 
-        row2_params = [RecognizeParam(0, 6, CharRecognize.number_char, 13, 1)]
+        row2_params = [RecognizeParam(0, 2, CharRecognize.number_char, 13, 1),
+                       RecognizeParam(3, 6, CharRecognize.number_char, 13, 1)]
         # cv2.imshow('row2', row_imgs[1])
         recognize.recognize_row_contours1(row_imgs[1], row2_params)
 
         row3_params = [RecognizeParam(0, 6,
                                       CharRecognize.number_char + CharRecognize.english_capital_char + CharRecognize.english_lowercase_char,
-                                      12, 1,is_brand=True)]
+                                      12, 1, is_brand=True)]
         recognize.recognize_row_contours1(row_imgs[2], row3_params)
 
     except Exception as err:

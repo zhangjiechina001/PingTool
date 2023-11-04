@@ -9,7 +9,7 @@ def find_contours(image: ndarray, kernel_size: int):
     kernel = np.ones((1, kernel_size), np.uint8)
     # 执行膨胀操作cv2.erode,
     acts = [cv2.dilate, cv2.erode]
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = image if len(image.shape)==2 else cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     iter_img = gray.copy()
     for act in acts:
         iter_img = act(iter_img, kernel, iterations=1)
@@ -59,7 +59,7 @@ def draw_contours(contours, image, isRect: bool,margin=0):
 
 def draw_rect(pos,image):
     x1,y1,x2,y2=pos
-    cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)  # 绘制带方向的外接矩形
+    cv2.rectangle(image, (x1, y1), (x2, y2), (255, 255, 0), 1)  # 绘制带方向的外接矩形
 
 def get_angles(contours: List[np.ndarray]):
     ret = []

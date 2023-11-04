@@ -43,10 +43,10 @@ class PytesseractWrap:
 
     def image_to_string(self, psm_item, oem_item, isTrim=False):
         try:
-            cmd = r'--psm {0} --oem {1} --user-words eng.user-words -c tessedit_char_whitelist={2} ' \
-                  r'-c load_system_dawg=true -c load_freq_dawg=true' \
-                  r'-c '.format(psm_item, oem_item, self.whitelist)
-            # cmd = self.link_command(psm_item, oem_item, self.enable_wordlist, self.whitelist)
+            # cmd = r'--psm {0} --oem {1} --user-words eng.user-words -c tessedit_char_whitelist={2} ' \
+            #       r'-c load_system_dawg=true -c load_freq_dawg=true' \
+            #       r'-c '.format(psm_item, oem_item, self.whitelist)
+            cmd = self.link_command(psm_item, oem_item, self.enable_wordlist, self.whitelist)
             temp = pytesseract.image_to_string(self.pil_img, config=cmd, lang='eng')
         except BaseException as err:
             temp = 'err'
