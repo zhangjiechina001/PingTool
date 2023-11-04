@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # 读取灰度图像
-image = cv2.imread("../full_1.png", cv2.IMREAD_GRAYSCALE)
+image = cv2.imread("../rotated_11.png", cv2.IMREAD_GRAYSCALE)
 
 # 通过阈值将灰度图像转换为二值图像
 threshold_value = 128

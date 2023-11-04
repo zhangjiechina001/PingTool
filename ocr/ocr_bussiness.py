@@ -4,9 +4,9 @@ from numpy import ndarray
 import cv2
 import numpy as np
 from typing import Tuple
-
-import other.deflection_correction as dfc
+import cv_utils as dfc
 from char_recognize import CharRecognize, RecognizeParam
+import cv_utils
 
 
 class SampleResult:
@@ -41,26 +41,21 @@ class SampleResult:
         return ret
 
 
-def location(image: ndarray, size=14):
-    # 使用腐蚀和膨胀来处理图像
-    kernel_size = 2 * size + 1  # 计算核的大小（奇数值）
-    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+class OcrProcess:
+    '''
+    1.识别区域定位，截取
+    2.歪斜矫正
+    3.网格划分
+    4.字符识别
+    '''
 
-    image_copy = image.copy()
-    img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, binary_img = cv2.threshold(img_gray, 0, 255, cv2.THRESH_OTSU)
-    # 执行腐蚀和膨胀
-    kernel1 = np.ones((5, 5), np.uint8)
-    eroded_image = cv2.erode(binary_img, kernel1, iterations=1)
-    dilated_image = cv2.dilate(eroded_image, kernel, iterations=1)
-    contours, _ = cv2.findContours(dilated_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    max_contour = max(contours, key=lambda x: cv2.contourArea(x))
-    x, y, w, h = cv2.boundingRect(max_contour)
-    ret = image_copy[y:y + h, x:x + w]
-    return ret
+    def __init__(self):
+        x1, y1, x2, y2 = cv_utils.location(img_src, -30)
+        self.img_location = img_src[y1:y2, x1:x2]
+        self.rotated = cv_utils.auto_rotate(self.img_location)
 
 
-def recognize(img_char: ndarray) -> Tuple[ndarray,SampleResult]:
+def recognize(img_char: ndarray) -> Tuple[ndarray, SampleResult]:
     recognize = CharRecognize(img_char)
     recognize.auto_rotate()
     ocr_ret = SampleResult()
