@@ -37,8 +37,9 @@ def set_table_header(tableWidget, header):
 
 def cv_to_qt(image: ndarray):
     # 增加灰度图判断
+    image=image.copy()
     if len(image.shape) == 2:
-        image = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2RGB)
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
     # 将 OpenCV 图像转换为 QImage
     height, width, channel = image.shape
     bytes_per_line = 3 * width

@@ -112,7 +112,7 @@ class MainWindow(QMainWindow):
 
         # ocr_result = self.mouse_cutout.recognize_ocr()
         # for item in ocr_result.get_map():
-        #     ui_helper.add_item(self.ui.tableWidget, item, OcrResult.get_header())
+        #     ui_helper.add_item(self.ui.tableWidget, item, SampleResult.get_header())
         # ocr_result.print_format()
 
     def get_values(self, listWidget: QListWidget):
