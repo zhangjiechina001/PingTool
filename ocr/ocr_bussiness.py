@@ -34,7 +34,7 @@ class SampleResult:
             '序号': self.index,
             '长度': self.length,
             '牌号': self.brand,
-            '倾斜角度': self.angle
+            '倾斜角度': '{0:.2f}'.format(self.angle)
         }
         return map1
 

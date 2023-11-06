@@ -13,7 +13,7 @@ from ocr.pytesseract_wrap import PytesseractWrap
 
 import ocr.ui_helper as ui_helper
 from split_ui import Ui_MainWindow
-import deflection_correction
+import ocr.cv_utils
 
 
 class MainWindow(QMainWindow):
