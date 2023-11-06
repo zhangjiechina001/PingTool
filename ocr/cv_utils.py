@@ -59,7 +59,8 @@ def draw_contours(contours, image, isRect: bool, margin=0):
 
 def get_rect(contour: ndarray, margin=0):
     x, y, w, h = cv2.boundingRect(contour)
-    return x + margin, y + margin, x + w - margin, y + h - margin
+    correct=lambda x:x if x>0 else 0
+    return correct(x + margin), correct(y + margin), x + w - margin, y + h - margin
 
 
 def draw_rect(pos, image):
@@ -118,6 +119,7 @@ def location(image: ndarray, margin: int, size=14):
     contours, _ = cv2.findContours(dilated_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     max_contour = max(contours, key=lambda x: cv2.contourArea(x))
     x1, y1, x2, y2 = get_rect(max_contour, margin)
+
     return x1, y1, x2, y2
 
 
@@ -130,7 +132,7 @@ def auto_rotate(img: ndarray):
     center = img_copy.shape[0] / 2, img_copy.shape[1] / 2
     print('angle_avg', angle_avg)
     rotated_img = rotate(img_copy, angle_avg, center)
-    return rotated_img
+    return rotated_img,angle_avg
 
 
 def cvt2gray(img_src: ndarray):

@@ -1,6 +1,6 @@
 import cv2
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QListWidget, QListWidgetItem
 from PyQt5.QtCore import Qt
 from typing import List, Dict
 from numpy import ndarray
@@ -33,6 +33,14 @@ def set_table_header(tableWidget, header):
     tableWidget.setHorizontalHeaderLabels(header)
     tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     tableWidget.setAlternatingRowColors(True)
+
+
+def set_list(items:List,listWdiget:QListWidget):
+    for index in range(len(items)):
+        item = QListWidgetItem()
+        # item.setCheckState(Qt.Checked)
+        item.setData(Qt.DisplayRole, '{0}.{1}'.format(index, items[index]))
+        listWdiget.addItem(item)
 
 
 def cv_to_qt(image: ndarray):

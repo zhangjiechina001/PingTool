@@ -130,7 +130,7 @@ class CharRecognize:
 
     def combine_contours(self, contours, start: int, end: int, margin=0):
         x1, y1, _, _ = cv2.boundingRect(contours[start])
-        end=end if end<len(contours)-1 else len(contours)-1
+        end = end if end < len(contours) - 1 else len(contours) - 1
         x, y, w, h = cv2.boundingRect(contours[end])
         x2, y2 = x + w, y + h
         correct = lambda val: val if val >= 0 else 0
@@ -186,9 +186,30 @@ class CharRecognize:
         ret = tessacter.image_to_string(13, 0)
         print(ret.replace("\n", ""))
 
-    def recognize_row3(self, img_src):
-        tessacter = PytesseractWrap(cv2_img=img_src)
-        tessacter.set_enable_wordlist(True)
-        tessacter.set_whitelist("")
-        ret = tessacter.image_to_string(8, 1)
-        print(ret.replace("\n", ""))
+
+if __name__ == '__main__':
+    img = cv2.imread('rotated_11.png')
+    recognize = CharRecognize(img)
+    recognize.auto_rotate()
+    cv2.imshow('rotated', recognize.img)
+    try:
+        row_imgs = recognize.split_image_by_y(recognize.img)
+        # 单个字符h=80 w=50
+        row1_params = [RecognizeParam(0, 6, CharRecognize.number_char, 13, 1),
+                       RecognizeParam(7, 7, CharRecognize.english_capital_char, 13, 0)]
+        recognize.recognize_row_contours1(row_imgs[0], row1_params)
+
+        row2_params = [RecognizeParam(0, 2, CharRecognize.number_char, 13, 1),
+                       RecognizeParam(3, 6, CharRecognize.number_char, 13, 1)]
+        # cv2.imshow('row2', row_imgs[1])
+        recognize.recognize_row_contours1(row_imgs[1], row2_params)
+
+        row3_params = [RecognizeParam(0, 6,
+                                      CharRecognize.number_char + CharRecognize.english_capital_char + CharRecognize.english_lowercase_char,
+                                      12, 1, is_brand=True)]
+        recognize.recognize_row_contours1(row_imgs[2], row3_params)
+
+    except Exception as err:
+        print(err, err.__traceback__)
+    cv2.imshow('recognized', recognize.img_show)
+    cv2.waitKey()

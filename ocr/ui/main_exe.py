@@ -9,7 +9,7 @@ from ocr.mouse_cutout import MouseCutOut
 from ocr.data.ocr_result import OcrResult
 from ocr.pytesseract_wrap import PytesseractWrap
 import ui_helper
-import ocr.other.deflection_correction as dc
+import ocr.cv_utils as dc
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):

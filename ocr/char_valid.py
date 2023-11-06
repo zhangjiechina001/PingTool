@@ -9,6 +9,7 @@ class CharValid:
 class FurnaceNumberValid(CharValid):
     def valid(self, input: str) -> bool:
         if len(input) == 1:
+            # return input == 'Z'
             pattern = r"^[A-Z]$"
             return re.match(pattern, input)
         else:
